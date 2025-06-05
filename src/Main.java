@@ -3,6 +3,8 @@ import java.io.BufferedWriter;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println();
+        String[] arquivos = {"src/data/teams1.txt"};
+        BaseballElimination be = new BaseballElimination(arquivos[0]);
+
     }
 }
