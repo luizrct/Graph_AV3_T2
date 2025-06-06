@@ -141,7 +141,7 @@ public class BaseballElimination {
 
             //adicionando as arestas dos times
             fn.addEdge(new FlowEdge(i, i+n_partidas, INFINITY));
-            fn.addEdge(new FlowEdge(i, i+n_partidas, INFINITY));
+            fn.addEdge(new FlowEdge(i, i+n_partidas+1, INFINITY));
         }
 
 
