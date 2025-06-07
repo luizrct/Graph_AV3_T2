@@ -134,17 +134,22 @@ public class BaseballElimination {
             }
         }
 
-
+        //adicionando as arestas das partidas e dos times
         for(int i = 1; i < n_partidas+1; i++){
             //adicionando as arestas das partidas
             fn.addEdge(new FlowEdge(0, i, partidas[i-1][2]));
 
             //adicionando as arestas dos times
-            fn.addEdge(new FlowEdge(i, i+n_partidas, INFINITY));
-            fn.addEdge(new FlowEdge(i, i+n_partidas+1, INFINITY));
+            int w1 = partidas[i-1][0];
+            int w2 = partidas[i-1][1];
+            fn.addEdge(new FlowEdge(i, w1+n_partidas+1, INFINITY));
+            fn.addEdge(new FlowEdge(i, w2+n_partidas+1, INFINITY));
         }
-
-
+        //adicionando as ultimas arestas
+        for(int i = n_partidas+1; i < V-1; i ++){
+            int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1];
+            fn.addEdge(new FlowEdge(i, V-1, capacidade));
+        }
         return false;
     }
 
