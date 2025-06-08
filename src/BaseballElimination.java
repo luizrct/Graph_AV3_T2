@@ -48,7 +48,9 @@ public class BaseballElimination {
             }
         }else{
             int V = 2 + ((N - 1) * (N - 2))/ 2 + (N - 1);
-            verificacaoEliminacao(V, 0);
+            for(int i = 0; i < teams.length; i++){
+                eliminado[i] = verificacaoEliminacao(V, i);
+            }
         }
     }
 
@@ -86,7 +88,7 @@ public class BaseballElimination {
     }
 
     public boolean isEliminated(String team){
-        return false;
+        return eliminado[time(team)];
     }
 
 
@@ -134,9 +136,11 @@ public class BaseballElimination {
             }
         }
 
+        int somaRemaingGames = 0;
         //adicionando as arestas das partidas e dos times
         for(int i = 1; i < n_partidas+1; i++){
             //adicionando as arestas das partidas
+            somaRemaingGames += partidas[i-1][2];
             fn.addEdge(new FlowEdge(0, i, partidas[i-1][2]));
 
             //adicionando as arestas dos times
@@ -148,9 +152,18 @@ public class BaseballElimination {
         //adicionando as ultimas arestas
         for(int i = n_partidas+1; i < V-1; i ++){
             int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1];
+            if(capacidade < 0){
+                return true;
+            }
             fn.addEdge(new FlowEdge(i, V-1, capacidade));
         }
-        return false;
+
+        FordFulkerson ff = new FordFulkerson(fn, 0, V-1);
+        if(ff.value() >= somaRemaingGames){
+            return false;
+        }else{
+            return true;
+        }
     }
 
 
