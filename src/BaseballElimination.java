@@ -38,13 +38,6 @@ public class BaseballElimination {
         //DEFININDO QUAIS TIMES FORAM ELIMINADOS
         if(N == 1){
             eliminado[0] = false;
-        }else if(N == 2){
-            //Comparação direta entre 2 times
-            if(wins[0] + remaining[0][0] < wins[1]){
-                eliminado[0] = true;
-            }else if(wins[1] + remaining[1][0] < wins[0]){
-                eliminado[1] = true;
-            }
         }else{
             //Verificação trivial
             for(int i = 0; i < teams.length; i++){
