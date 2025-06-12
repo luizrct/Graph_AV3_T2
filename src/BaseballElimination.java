@@ -10,8 +10,8 @@ public class BaseballElimination {
     private int[] losses;
     private int[][] remaining;
     private boolean[] eliminado;
+    private boolean[] eliminacaoTrivial;
     private String[] teams;
-
     public BaseballElimination(String fileName){
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))){
             String linha = br.readLine();
@@ -21,6 +21,7 @@ public class BaseballElimination {
             remaining = new int[N][];
             teams = new String[N];
             eliminado = new boolean[N];
+            eliminacaoTrivial = new boolean[N];
             int c = 0;
             while (true){
                 linha = br.readLine();
@@ -38,8 +39,6 @@ public class BaseballElimination {
         if(N == 1){
             eliminado[0] = false;
         }else if(N == 2){
-            eliminado[0] = false;
-            eliminado[1] = false;
             //Comparação direta entre 2 times
             if(wins[0] + remaining[0][0] < wins[1]){
                 eliminado[0] = true;
@@ -47,9 +46,22 @@ public class BaseballElimination {
                 eliminado[1] = true;
             }
         }else{
+            //Verificação trivial
+            for(int i = 0; i < teams.length; i++){
+                for(int j = 0; j < teams.length; j++){
+                    if(j != i){
+                        if(wins[i] + remaining[i][0] < wins[j]){
+                            eliminado[i] = true;
+                        }
+                    }
+                }
+            }
+            //Verificação não trivial
             int V = 2 + ((N - 1) * (N - 2))/ 2 + (N - 1);
             for(int i = 0; i < teams.length; i++){
-                eliminado[i] = verificacaoEliminacao(V, i);
+                if(!eliminado[i]){
+                    eliminado[i] =  verificacaoEliminacao(V, i);
+                }
             }
         }
     }
@@ -152,9 +164,6 @@ public class BaseballElimination {
         //adicionando as ultimas arestas
         for(int i = n_partidas+1; i < V-1; i ++){
             int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1];
-            if(capacidade < 0){
-                return true;
-            }
             fn.addEdge(new FlowEdge(i, V-1, capacidade));
         }
 
@@ -178,4 +187,6 @@ public class BaseballElimination {
         }
         return true;
     }
+
+
 }

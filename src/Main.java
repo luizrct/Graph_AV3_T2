@@ -3,7 +3,7 @@ import java.io.BufferedWriter;
 
 public class Main {
     public static void main(String[] args) {
-        String[] arquivos = {"src/data/teams1.txt", "src/data/teams5.txt", "src/data/teams60.txt"};
+        String[] arquivos = {"src/data/teams1.txt", "src/data/teams5b.txt", "src/data/teams60.txt"};
         BaseballElimination be = new BaseballElimination(arquivos[1]);
         System.out.println("Número de times: "+be.numberOfTeams());
         System.out.println("INFORMAÇÃO GERAL DOS TIMES: ");
