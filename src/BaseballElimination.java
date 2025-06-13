@@ -1,5 +1,6 @@
 import assets.FlowEdge;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -12,6 +13,7 @@ public class BaseballElimination {
     private boolean[] eliminado;
     private boolean[] eliminacaoTrivial;
     private String[] teams;
+    private boolean[][] minCuts;
     public BaseballElimination(String fileName){
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))){
             String linha = br.readLine();
@@ -22,6 +24,7 @@ public class BaseballElimination {
             teams = new String[N];
             eliminado = new boolean[N];
             eliminacaoTrivial = new boolean[N];
+            minCuts = new boolean[N][];
             int c = 0;
             while (true){
                 linha = br.readLine();
@@ -44,6 +47,7 @@ public class BaseballElimination {
                 for(int j = 0; j < teams.length; j++){
                     if(j != i){
                         if(wins[i] + remaining[i][0] < wins[j]){
+                            eliminacaoTrivial[i] = true;
                             eliminado[i] = true;
                         }
                     }
@@ -70,6 +74,10 @@ public class BaseballElimination {
             }
         }
         return null;
+    }
+
+    public Iterable<String> teams(){
+        return List.of(teams);
     }
 
     public String time(int i){
@@ -155,12 +163,14 @@ public class BaseballElimination {
             fn.addEdge(new FlowEdge(i, w2+n_partidas+1, INFINITY));
         }
         //adicionando as ultimas arestas
+        int incremento = 0;
         for(int i = n_partidas+1; i < V-1; i ++){
-            int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1];
+            int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1 + incremento];
             fn.addEdge(new FlowEdge(i, V-1, capacidade));
         }
 
         FordFulkerson ff = new FordFulkerson(fn, 0, V-1);
+        minCuts[time] = ff.marked;
         if(ff.value() >= somaRemaingGames){
             return false;
         }else{
@@ -180,6 +190,34 @@ public class BaseballElimination {
         }
         return true;
     }
+
+    public Iterable<String> certificateOfElimination(String team) {
+        List<String> S = new ArrayList<>();
+        int time = time(team);
+        if (!eliminacaoTrivial[time]) {
+            boolean[] s = minCuts[time];
+            int offset = 1 + ((N - 1) * (N - 2)) / 2;
+            for (int i = 0, t = 0; i < teams.length; i++) {
+                if (i != time) {
+                    if (s[offset + t]) {
+                        S.add(teams[i]);
+                    }
+                    t++;
+                }
+            }
+        } else {
+            for (int i = 0; i < teams.length; i++) {
+                if (i != time) {
+                    if (wins[time] + remaining[time][0] < wins[i]) {
+                        S.add(teams[i]);  // CORRIGIDO
+                        break;
+                    }
+                }
+            }
+        }
+        return S;
+    }
+
 
 
 }

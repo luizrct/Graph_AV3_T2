@@ -1,23 +1,19 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-
+import assets.*;
 public class Main {
     public static void main(String[] args) {
-        String[] arquivos = {"src/data/teams1.txt", "src/data/teams4.txt", "src/data/teams5b.txt", "src/data/teams60.txt"};
-        BaseballElimination be = new BaseballElimination(arquivos[1]);
-        System.out.println("Número de times: "+be.numberOfTeams());
-        System.out.println("INFORMAÇÃO GERAL DOS TIMES: ");
-
-        for(int i = 0; i < be.numberOfTeams(); i++){
-            String nomeTime = be.time(i);
-            String eliminado = "";
-            if(be.isEliminated(nomeTime)){
-                eliminado = "sim";
-            }else{
-                eliminado = "não";
+        BaseballElimination division = new BaseballElimination(args[0]);
+        for (String team : division.teams()) {
+            if (division.isEliminated(team)) {
+                StdOut.print(team + " is eliminated by the subset R = { ");
+                for (String t : division.certificateOfElimination(team)) {
+                    StdOut.print(t + " ");
+                }
+                StdOut.println("}");
+            } else {
+                StdOut.println(team + " is not eliminated");
             }
-            System.out.println("Time: "+i+"; Nome: "+nomeTime+"; Vitórias: "+be.wins(nomeTime)+"; Derrotas: "+be.losses(nomeTime)+"; Sobrando: "+be.remaining(nomeTime)+" Eliminado: "+eliminado);
-            System.out.println(" ");
         }
     }
 }

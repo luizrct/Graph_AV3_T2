@@ -41,10 +41,9 @@ public class FordFulkerson {
     private static final double FLOATING_POINT_EPSILON = 1.0E-11;
 
     private final int V;          // number of vertices
-    private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
+    public boolean[] marked;     // marked[v] = true iff s->v path in residual graph
     private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
     private double value;         // current value of max flow
-
     /**
      * Compute a maximum flow and minimum cut in the network {@code G}
      * from vertex {@code s} to vertex {@code t}.
