@@ -209,7 +209,7 @@ public class BaseballElimination {
             for (int i = 0; i < teams.length; i++) {
                 if (i != time) {
                     if (wins[time] + remaining[time][0] < wins[i]) {
-                        S.add(teams[i]);  // CORRIGIDO
+                        S.add(teams[i]);
                         break;
                     }
                 }
