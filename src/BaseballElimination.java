@@ -14,6 +14,7 @@ public class BaseballElimination {
     private boolean[] eliminacaoTrivial;
     private String[] teams;
     private boolean[][] minCuts;
+    public FlowNetwork G;
     public BaseballElimination(String fileName){
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))){
             String linha = br.readLine();
@@ -132,6 +133,7 @@ public class BaseballElimination {
         int n_partidas = ((N - 1) * (N - 2)) / 2;
         int[][] partidas =  new int[n_partidas][];
         int c = 0;
+        int inc = 0;
         for(int i = 0; i < N; i ++){
             if(i != time){
                 for(int j = 1; j < remaining[i].length; j++){
@@ -146,6 +148,8 @@ public class BaseballElimination {
                         }
                     }
                 }
+            }else{
+                inc = i;
             }
         }
 
@@ -159,18 +163,30 @@ public class BaseballElimination {
             //adicionando as arestas dos times
             int w1 = partidas[i-1][0];
             int w2 = partidas[i-1][1];
+            if(w1 > inc){
+                w1--;
+            }
+            if(w2 > inc){
+                w2--;
+            }
             fn.addEdge(new FlowEdge(i, w1+n_partidas+1, INFINITY));
             fn.addEdge(new FlowEdge(i, w2+n_partidas+1, INFINITY));
         }
         //adicionando as ultimas arestas
         int incremento = 0;
         for(int i = n_partidas+1; i < V-1; i ++){
+            if(i == time){
+                incremento++;
+            }
             int capacidade = wins[time] + remaining[time][0] - wins[i - n_partidas - 1 + incremento];
             fn.addEdge(new FlowEdge(i, V-1, capacidade));
         }
 
         FordFulkerson ff = new FordFulkerson(fn, 0, V-1);
         minCuts[time] = ff.marked;
+        if(time == 3){
+            this.G = fn;
+        }
         if(ff.value() >= somaRemaingGames){
             return false;
         }else{
